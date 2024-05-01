@@ -32,6 +32,15 @@
     },
     "params": {
       "type": "json"
+    },
+    "changedFields": {
+      "type": "json"
+    },
+    "beforeUpdate": {
+      "type": "json"
+    },
+    "afterUpdate": {
+      "type": "json"
     }
   }
 }

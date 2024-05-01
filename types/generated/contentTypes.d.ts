@@ -841,6 +841,9 @@ export interface ApiAuditLogAuditLog extends Schema.CollectionType {
     request: Attribute.JSON;
     method: Attribute.Text;
     params: Attribute.JSON;
+    changedFields: Attribute.JSON;
+    beforeUpdate: Attribute.JSON;
+    afterUpdate: Attribute.JSON;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

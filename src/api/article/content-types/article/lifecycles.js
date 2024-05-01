@@ -1,3 +1,6 @@
+let changedFields = [];
+let oldData = {};
+
 module.exports = {
   afterCreate(event) {
     const { result, params } = event;
@@ -9,7 +12,7 @@ module.exports = {
 
         content: result.Content,
 
-        author: result.createdBy,
+        author: params.data.Author,
 
         params: params,
 
@@ -17,25 +20,42 @@ module.exports = {
       },
     });
   },
+
+  async beforeUpdate(params, data) {
+    const previousRecord = await strapi.db
+      .query("api::article.article")
+      .findOne({
+        where: {
+          id: params.params.data.id,
+        },
+      });
+
+    oldData = previousRecord;
+  },
   afterUpdate(event) {
     const { result, params } = event;
+    const newData = params.data;
+
+    changedFields = [];
+    for (const key in newData) {
+      if (oldData[key] !== newData[key]) {
+        changedFields.push(key);
+      }
+    }
 
     strapi.entityService.create("api::audit-log.audit-log", {
       data: {
         contenttype: "Article",
-
         action: "Update content",
-
         content: result.Content,
-
-        author: result.createdBy,
-
+        author: result.Author,
         params: params,
-
+        changedFields: changedFields,
         request: event,
       },
     });
   },
+
   afterDelete(event) {
     const { result, params } = event;
     strapi.entityService.create("api::audit-log.audit-log", {
